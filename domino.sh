@@ -28,12 +28,12 @@ getpid
 case "$1" in
 
 start)
-   if [ "$pid" = "" ]; then
+   if [ ! "$pid" ]; then
      echo -n "Starting $DESC: "
      su - $SrvAcc -c "cd $DominoDir && screen -m -d -S Domino $DominoSrv"
      sleep 3
      getpid
-     if [ "$pid" != "" ]; then
+     if [ "$pid" ]; then
        success
        touch /var/lock/subsys/domino
      else
@@ -52,7 +52,7 @@ stop)
 
      # Let's wait for the Domino to terminate
 
-     while [ "$pid" != "" ] && [ "$tok" != "$TimeOutKill" ] ; do
+     while [ "$pid" ] && [ "$tok" != "$TimeOutKill" ] ; do
        tok=$[tok+1]
        sleep 2
        getpid
@@ -91,7 +91,7 @@ status)
 ;;
    
 restart)
-      if [ "$pid" != "" ]; then
+      if [ "$pid" ]; then
    	$0 stop
       fi
    	$0 start
