@@ -46,19 +46,18 @@ start)
 stop)
    TimeOutKill=$[TimeOutKill/2]
    echo -n "Shutting down $DESC: "
-   if [ "$pid" != "" ]; then
+   if [ "$pid" ]; then
      cd $DominoDir
      /opt/lotus/notes/latest/linux/server -quit > /dev/null &
 
      # Let's wait for the Domino to terminate
 
-     while [ "$pid" ] && [ "$tok" != "$TimeOutKill" ] ; do
-       tok=$[tok+1]
-       sleep 2
+     while [ "$pid" ] && [ "$tok" -lt "$TimeOutKill" ] ; do
+       sleep 2; tok=$[tok+2]
        getpid
      done
 
-     if  [ "$tok" != "$TimeOutKill" ] ; then
+     if  [ ! "$pid" ] ; then
        success
      else
        failure
